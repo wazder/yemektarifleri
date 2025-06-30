@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <title>Yemek Tarifleri</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Yemek Tarifleri</h1>
+  <div id="recipes"></div>
+
+  <script>
+    // JSON dosyasını yükle
+    fetch('data/recipes.json')
+      .then(res => res.json())
+      .then(recipes => {
+        const container = document.getElementById('recipes');
+        recipes.forEach((rec, i) => {
+          // Her tarif için bir <section>
+          const sec = document.createElement('section');
+
+          // Başlık
+          const h2 = document.createElement('h2');
+          h2.textContent = rec.title;
+          sec.appendChild(h2);
+
+          // İçerik (malzeme + adımlar)
+          const div = document.createElement('div');
+          div.className = 'content';
+
+          // Malzemeler
+          if (rec.ingredients && rec.ingredients.length) {
+            const ul = document.createElement('ul');
+            rec.ingredients.forEach(item => {
+              const li = document.createElement('li');
+              li.textContent = item;
+              ul.appendChild(li);
+            });
+            div.appendChild(ul);
+          }
+
+          // Tarif adımları
+          if (rec.steps && rec.steps.length) {
+            const ol = document.createElement('ol');
+            rec.steps.forEach(step => {
+              const li = document.createElement('li');
+              li.textContent = step;
+              ol.appendChild(li);
+            });
+            div.appendChild(ol);
+          }
+
+          sec.appendChild(div);
+
+          // Başlığa tıklayınca aç/kapa
+          h2.addEventListener('click', () => {
+            div.style.display = div.style.display === 'none' ? 'block' : 'none';
+          });
+
+          container.appendChild(sec);
+        });
+      })
+      .catch(err => console.error('JSON yüklenirken hata:', err));
+  </script>
+</body>
+</html>
